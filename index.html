@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modserver3 – Návody</title>
+  <meta name="description" content="Návody na pripojenie k modovanému vojenskému Minecraft serveru Modserver3.">
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #151b23;
+      --panel-2: #1c2430;
+      --text: #f4f7fb;
+      --muted: #aeb9c7;
+      --accent: #a936e4;
+      --accent-2: #7130ad;
+      --line: rgba(255,255,255,.10);
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(113,48,173,.16), transparent 34rem),
+        var(--bg);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 92vh;
+      display: grid;
+      place-items: center;
+      padding: 48px 0 64px;
+      text-align: center;
+    }
+
+    .hero-logo {
+      display: block;
+      width: min(520px, 86vw);
+      max-height: 520px;
+      object-fit: contain;
+      margin: 0 auto 22px;
+      filter: drop-shadow(0 22px 34px rgba(0,0,0,.5));
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 6vw, 4.6rem);
+      line-height: 1;
+      letter-spacing: -.04em;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 18px auto 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.4vw, 1.25rem);
+    }
+
+    .server-box {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 30px auto 0;
+    }
+
+    .ip {
+      padding: 13px 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,.05);
+      font-family: Consolas, monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    button,
+    .button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    button:hover,
+    .button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
+    .requirements {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
+      color: var(--muted);
+    }
+
+    .requirements span {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 42px;
+    }
+
+    .card {
+      display: block;
+      min-height: 170px;
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      text-align: left;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(169,54,228,.75);
+      background: linear-gradient(145deg, rgba(169,54,228,.16), rgba(255,255,255,.035));
+    }
+
+    .card-number {
+      color: #d58cff;
+      font-weight: 900;
+      font-size: .9rem;
+      letter-spacing: .08em;
+    }
+
+    .card h2 {
+      margin: 9px 0 7px;
+      font-size: clamp(1.35rem, 3vw, 1.8rem);
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    main {
+      padding-bottom: 80px;
+    }
+
+    .guide {
+      scroll-margin-top: 18px;
+      margin: 26px auto 70px;
+      padding: clamp(22px, 4vw, 42px);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(21,27,35,.92);
+      box-shadow: var(--shadow);
+    }
+
+    .guide-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: #d58cff;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      font-size: .8rem;
+    }
+
+    .guide h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.1;
+    }
+
+    .guide-intro {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .back {
+      flex: 0 0 auto;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .back:hover {
+      color: white;
+    }
+
+    .step {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .step:first-of-type {
+      border-top: 0;
+    }
+
+    .step h3 {
+      margin: 0 0 8px;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+    }
+
+    .step p {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+
+    .step a {
+      color: #d58cff;
+      font-weight: 800;
+    }
+
+    .photo-placeholder {
+      display: grid;
+      place-items: center;
+      min-height: 260px;
+      padding: 24px;
+      border: 2px dashed rgba(255,255,255,.18);
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(169,54,228,.08), transparent),
+        var(--panel-2);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .photo-placeholder strong {
+      display: block;
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    .guide-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 14px 36px rgba(0,0,0,.32);
+    }
+
+    .note {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      background: rgba(169,54,228,.09);
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 22px 0 40px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      .hero {
+        min-height: auto;
+        padding-top: 28px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .guide-head {
+        display: block;
+      }
+
+      .back {
+        display: inline-block;
+        margin-top: 16px;
+      }
+
+      .photo-placeholder {
+        min-height: 190px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero" id="home">
+    <div class="container">
+      <img class="hero-logo" src="logo.png" alt="Logo Modserver3">
+
+      <h1>Modserver3</h1>
+      <p class="subtitle">
+        Modovaný vojenský Minecraft server. Na tejto stránke nájdeš jednoduché
+        fotonávody na inštaláciu a pripojenie.
+      </p>
+
+      <div class="server-box">
+        <div class="ip" id="server-ip">116.202.51.118:20000</div>
+        <button type="button" onclick="copyIP(this)">Skopírovať IP</button>
+      </div>
+
+      <div class="requirements">
+        <span>Zakúpený Minecraft Java Edition</span>
+        <span>CurseForge</span>
+        <span>Modpack Modserver3</span>
+      </div>
+
+      <nav class="cards" aria-label="Návody">
+        <a class="card" href="#modpack">
+          <div class="card-number">NÁVOD 01</div>
+          <h2>Stiahnutie modpacku</h2>
+          <p>Stiahnutie, importovanie a spustenie Modserver3 v CurseForge.</p>
+        </a>
+
+        <a class="card" href="#curseforge">
+          <div class="card-number">NÁVOD 02</div>
+          <h2>Stiahnutie CurseForge</h2>
+          <p>Inštalácia aplikácie potrebnej na spustenie modpacku.</p>
+        </a>
+
+        <a class="card" href="#mapa">
+          <div class="card-number">NÁVOD 03</div>
+          <h2>Ovládanie mapy</h2>
+          <p>Pohyb, približovanie, vrstvy, regióny a vyhľadávanie na mape.</p>
+        </a>
+
+        <a class="card" href="#keybindy">
+          <div class="card-number">NÁVOD 04</div>
+          <h2>Odporúčané keybindy</h2>
+          <p>Odporúčané klávesy a odstránenie konfliktov medzi modmi.</p>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="guide" id="modpack">
+      <div class="guide-head">
+        <div>
+          <p class="eyebrow">Návod 01</p>
+          <h2>Stiahnutie modpacku</h2>
+          <p class="guide-intro">
+            Postup stiahnutia, importovania a spustenia modpacku Modserver3 v CurseForge.
+          </p>
+        </div>
+        <a class="back" href="#home">↑ Späť na hlavnú stránku</a>
+      </div>
+
+      <div class="step">
+        <h3>1. Otvorenie importu modpacku</h3>
+        <p>
+          V CurseForge otvor oddelenie <strong>Minecraft</strong>, prejdi na
+          záložku <strong>My Modpacks</strong> a klikni na tlačidlo
+          <strong>Import</strong>.
+        </p>
+
+        <img
+          class="guide-image"
+          src="modpack-01.png"
+          alt="CurseForge Minecraft My Modpacks s označeným tlačidlom Import"
+        >
+      </div>
+
+      <div class="step">
+        <h3>2. Získanie a zadanie kódu modpacku</h3>
+        <p>
+          Napíš <strong>Heafastovi/Lukášovi</strong> alebo priamo do
+          <strong>WhatsApp skupiny Modserver3</strong> a požiadaj niekoho
+          o kód na stiahnutie modpacku. Kód zadaj do poľa
+          <strong>Use Profile Code</strong> a potvrď tlačidlom
+          <strong>Import</strong>.
+        </p>
+
+        <div class="note">
+          Každý kód je platný iba <strong>7 dní</strong>.
+        </div>
+
+        <img
+          class="guide-image"
+          src="modpack-02.png"
+          alt="Okno Import Profile so zvýrazneným poľom Use Profile Code"
+        >
+      </div>
+
+      <div class="step">
+        <h3>3. Pridanie servera a prvé pripojenie</h3>
+        <p>
+          Spusti Minecraft, otvor <strong>Multiplayer</strong> a klikni na
+          <strong>Add Server</strong>. Ako názov servera zadaj
+          <strong>Modserver3</strong> a do poľa Server Address vlož
+          <strong>116.202.51.118:20000</strong>. Potom klikni na
+          <strong>Done</strong> a pripoj sa na server.
+        </p>
+
+        <img
+          class="guide-image"
+          src="modpack-03.png"
+          alt="Pridanie servera Modserver3 v Minecrafte so zvýrazneným názvom a IP adresou"
+        >
+
+        <div class="note">
+          Hneď po prvom pripojení napíš <strong>Lukášovi/Heafastovi</strong>,
+          aby ti pridelil štát, do ktorého patríš. Môžeš ho tiež požiadať
+          o teleportovanie do hlavného mesta vášho štátu.
+        </div>
+      </div>
+    </section>
+
+    <section class="guide" id="curseforge">
+      <div class="guide-head">
+        <div>
+          <p class="eyebrow">Návod 02</p>
+          <h2>Stiahnutie CurseForge</h2>
+          <p class="guide-intro">
+            CurseForge je potrebný na jednoduchú inštaláciu a spustenie modpacku.
+          </p>
+        </div>
+        <a class="back" href="#home">↑ Späť na hlavnú stránku</a>
+      </div>
+
+      <div class="step">
+        <h3>1. Stiahnutie inštalátora</h3>
+        <p>
+          Choď na
+          <a href="https://www.curseforge.com/download/app" target="_blank" rel="noopener">
+            stránku CurseForge
+          </a>
+          a klikni na tlačidlo <strong>Download on Overwolf</strong>.
+        </p>
+
+        <img
+          class="guide-image"
+          src="curseforge-01.png"
+          alt="Stránka CurseForge s označeným tlačidlom Download On Overwolf"
+        >
+      </div>
+
+      <div class="step">
+        <h3>2. Spustenie inštalátora</h3>
+        <p>
+          Po stiahnutí otvor inštalačný súbor CurseForge. Klikni na
+          <strong>Next</strong>, následne potvrď <strong>Terms of Use</strong>
+          a znova pokračuj tlačidlom <strong>Next</strong>. Nakoniec klikni na
+          <strong>Accept &amp; Install</strong>.
+        </p>
+
+        <img
+          class="guide-image"
+          src="curseforge-02.png"
+          alt="Inštalátor CurseForge s označeným tlačidlom Accept and Install"
+        >
+      </div>
+      <div class="step">
+        <h3>3. Kontrola Minecraftu</h3>
+        <p>
+          Keď sa CurseForge otvorí, skontroluj, či našlo <strong>Minecraft</strong>.
+          Ak to vyzerá ako na obrázku, máš všetko správne a môžeš ísť na
+          <strong>stiahnutie modpacku</strong>. Ak CurseForge Minecraft nenašlo,
+          pokračuj na ďalší krok.
+        </p>
+
+        <img
+          class="guide-image"
+          src="curseforge-03.png"
+          alt="Otvorený CurseForge so zvýraznenou hrou Minecraft"
+        >
+      </div>
+
+      <div class="step">
+        <h3>4. Ak CurseForge Minecraft nenašlo</h3>
+        <p>
+          Ak CurseForge <strong>Minecraft nenašlo</strong>, klikni na
+          <strong>+</strong> na ľavej strane obrazovky a daj
+          <strong>vyhľadať Minecraft</strong>. Ak ho ani potom nenájde,
+          klikni na <strong>Manually add a game</strong> a nájdi priečinok,
+          kde máš nainštalovaný celý Minecraft.
+        </p>
+
+        <img
+          class="guide-image"
+          src="curseforge-04.png"
+          alt="CurseForge s označeným tlačidlom plus pre ručné pridanie hry"
+        >
+      </div>
+
+    </section>
+
+    <section class="guide" id="mapa">
+      <div class="guide-head">
+        <div>
+          <p class="eyebrow">Návod 03</p>
+          <h2>Ovládanie mapy</h2>
+          <p class="guide-intro">
+            Návod na prácu s webovou mapou Modserver3.
+          </p>
+        </div>
+        <a class="back" href="#home">↑ Späť na hlavnú stránku</a>
+      </div>
+
+      <div class="step">
+        <h3>Pripravujeme</h3>
+        <p>Fotografie a presný popis ovládania mapy doplníme neskôr.</p>
+        <div class="photo-placeholder">
+          <div>
+            <strong>Miesto pre screenshot mapy</strong>
+            Ovládacie prvky označíme priamo na fotografii.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide" id="keybindy">
+      <div class="guide-head">
+        <div>
+          <p class="eyebrow">Návod 04</p>
+          <h2>Odporúčané keybindy</h2>
+          <p class="guide-intro">
+            Nastavenia kláves, ktoré zjednodušia hranie a zabránia konfliktom.
+          </p>
+        </div>
+        <a class="back" href="#home">↑ Späť na hlavnú stránku</a>
+      </div>
+
+      <div class="step">
+        <h3>Pripravujeme</h3>
+        <p>Presný zoznam odporúčaných kláves a screenshoty doplníme postupne.</p>
+        <div class="photo-placeholder">
+          <div>
+            <strong>Miesto pre screenshot nastavenia kláves</strong>
+            Dôležité voľby vyznačíme červenými krúžkami.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Modserver3
+  </footer>
+
+  <script>
+    function copyIP(button) {
+      const ip = document.getElementById('server-ip').textContent.trim();
+      navigator.clipboard.writeText(ip).then(() => {
+        const oldText = button.textContent;
+        button.textContent = 'IP skopírovaná';
+        setTimeout(() => button.textContent = oldText, 1600);
+      }).catch(() => {
+        window.prompt('Skopíruj IP adresu:', ip);
+      });
+    }
+  </script>
+</body>
+</html>
