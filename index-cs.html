@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+<html lang="cs">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modserver3 – Návody</title>
+<meta content="Návody k připojení k modovanému vojenskému Minecraft serveru Modserver3." name="description"/>
+<style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #151b23;
+      --panel-2: #1c2430;
+      --text: #f4f7fb;
+      --muted: #aeb9c7;
+      --accent: #a936e4;
+      --accent-2: #7130ad;
+      --line: rgba(255,255,255,.10);
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(113,48,173,.16), transparent 34rem),
+        var(--bg);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 92vh;
+      display: grid;
+      place-items: center;
+      padding: 48px 0 64px;
+      text-align: center;
+    }
+
+    .hero-logo {
+      display: block;
+      width: min(520px, 86vw);
+      max-height: 520px;
+      object-fit: contain;
+      margin: 0 auto 22px;
+      filter: drop-shadow(0 22px 34px rgba(0,0,0,.5));
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 6vw, 4.6rem);
+      line-height: 1;
+      letter-spacing: -.04em;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 18px auto 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.4vw, 1.25rem);
+    }
+
+    .server-box {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 30px auto 0;
+    }
+
+    .ip {
+      padding: 13px 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,.05);
+      font-family: Consolas, monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    button,
+    .button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    button:hover,
+    .button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
+    .join-requirements {
+      width: min(760px, 100%);
+      margin: 28px auto 0;
+      padding: 18px 22px;
+      border: 1px solid rgba(169,54,228,.42);
+      border-left: 5px solid var(--accent);
+      border-radius: 14px;
+      background: rgba(169,54,228,.08);
+      text-align: left;
+      box-shadow: 0 12px 28px rgba(0,0,0,.18);
+    }
+
+    .join-requirements strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text);
+      font-size: 1.08rem;
+    }
+
+    .join-requirements p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 42px;
+    }
+
+    .card {
+      display: block;
+      min-height: 170px;
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      text-align: left;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(169,54,228,.75);
+      background: linear-gradient(145deg, rgba(169,54,228,.16), rgba(255,255,255,.035));
+    }
+
+    .card-number {
+      color: #d58cff;
+      font-weight: 900;
+      font-size: .9rem;
+      letter-spacing: .08em;
+    }
+
+    .card h2 {
+      margin: 9px 0 7px;
+      font-size: clamp(1.35rem, 3vw, 1.8rem);
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    main {
+      padding-bottom: 80px;
+    }
+
+    .guide {
+      scroll-margin-top: 18px;
+      margin: 26px auto 70px;
+      padding: clamp(22px, 4vw, 42px);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(21,27,35,.92);
+      box-shadow: var(--shadow);
+    }
+
+    .guide-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: #d58cff;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      font-size: .8rem;
+    }
+
+    .guide h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.1;
+    }
+
+    .guide-intro {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .back {
+      flex: 0 0 auto;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .back:hover {
+      color: white;
+    }
+
+    .step {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .step:first-of-type {
+      border-top: 0;
+    }
+
+    .step h3 {
+      margin: 0 0 8px;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+    }
+
+    .step p {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+
+    .step a {
+      color: #d58cff;
+      font-weight: 800;
+    }
+
+    .photo-placeholder {
+      display: grid;
+      place-items: center;
+      min-height: 260px;
+      padding: 24px;
+      border: 2px dashed rgba(255,255,255,.18);
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(169,54,228,.08), transparent),
+        var(--panel-2);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .photo-placeholder strong {
+      display: block;
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    .guide-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 14px 36px rgba(0,0,0,.32);
+    }
+
+    .note {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      background: rgba(169,54,228,.09);
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 22px 0 40px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+
+    .language-switch {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      display: flex;
+      gap: 5px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(11,15,20,.88);
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+      backdrop-filter: blur(10px);
+    }
+
+    .language-switch a {
+      min-width: 45px;
+      white-space: nowrap;
+      padding: 8px 11px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: .9rem;
+      font-weight: 900;
+      line-height: 1;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .language-switch a:hover {
+      color: white;
+      background: rgba(255,255,255,.07);
+    }
+
+    .language-switch a.active {
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    @media (max-width: 720px) {
+      .hero {
+        min-height: auto;
+        padding-top: 72px;
+      }
+
+      .language-switch {
+        top: 10px;
+        right: 10px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .guide-head {
+        display: block;
+      }
+
+      .back {
+        display: inline-block;
+        margin-top: 16px;
+      }
+
+      .photo-placeholder {
+        min-height: 190px;
+      }
+    }
+  </style>
+</head>
+<body>
+<nav aria-label="Výběr jazyka" class="language-switch">
+<a class="" href="index.html" lang="sk">Slovenčina</a>
+<a aria-current="page" class="active" href="index-cs.html" lang="cs">Čeština</a>
+</nav>
+<header class="hero" id="home">
+<div class="container">
+<img alt="Logo Modserver3" class="hero-logo" src="./modserver3-logo.png?v=2"/>
+<h1>Modserver3</h1>
+<p class="subtitle">
+        Modovaný vojenský Minecraft server. Na této stránce najdeš jednoduché fotonávody k instalaci a připojení.
+      </p>
+<div class="server-box">
+<div class="ip" id="server-ip">116.202.51.118:20000</div>
+<button onclick="copyIP(this)" type="button">Zkopírovat IP</button>
+</div>
+<div class="join-requirements">
+<strong>Co potřebuješ k připojení</strong>
+<p>
+          Musíš mít zakoupený <strong>Minecraft Java Edition</strong>. Potom si nainstaluj <strong>CurseForge</strong> a podle návodu stáhni <strong>modpack Modserver3</strong>.
+        </p>
+</div>
+<nav aria-label="Návody" class="cards">
+<a class="card" href="#modpack">
+<div class="card-number">NÁVOD 01</div>
+<h2>Stažení modpacku</h2>
+<p>Stažení, import a spuštění Modserver3 v CurseForge.</p>
+</a>
+<a class="card" href="#curseforge">
+<div class="card-number">NÁVOD 02</div>
+<h2>Stažení CurseForge</h2>
+<p>Instalace aplikace potřebné ke spuštění modpacku.</p>
+</a>
+<a class="card" href="#mapa">
+<div class="card-number">NÁVOD 03</div>
+<h2>Ovládání mapy</h2>
+<p>Pohyb, přibližování, vrstvy, regiony a vyhledávání na mapě.</p>
+</a>
+<a class="card" href="#keybindy">
+<div class="card-number">NÁVOD 04</div>
+<h2>Doporučené keybindy</h2>
+<p>Doporučené klávesy a odstranění konfliktů mezi mody.</p>
+</a>
+</nav>
+</div>
+</header>
+<main class="container">
+<section class="guide" id="modpack">
+<div class="guide-head">
+<div>
+<p class="eyebrow">Návod 01</p>
+<h2>Stažení modpacku</h2>
+<p class="guide-intro">
+            Postup stažení, importu a spuštění modpacku Modserver3 v CurseForge.
+          </p>
+</div>
+<a class="back" href="#home">↑ Zpět na hlavní stránku</a>
+</div>
+<div class="step">
+<h3>1. Otevření importu modpacku</h3>
+<p>
+          V CurseForge otevři sekci <strong>Minecraft</strong>, přejdi na záložku <strong>My Modpacks</strong> a klikni na tlačítko
+          <strong>Import</strong>.
+        </p>
+<img alt="CurseForge Minecraft My Modpacks s tlačítkem Import" class="guide-image" src="modpack-01.png"/>
+</div>
+<div class="step">
+<h3>2. Získání a zadání kódu modpacku</h3>
+<p>
+          Napiš <strong>Heafastovi/Lukášovi</strong> nebo přímo do
+          <strong>WhatsApp skupiny Modserver3</strong> a požádej někoho o kód ke stažení modpacku. Kód zadej do pole
+          <strong>Use Profile Code</strong> a potvrď tlačítkem
+          <strong>Import</strong>.
+        </p>
+<div class="note">
+          Každý kód je platný pouze <strong>7 dní</strong>.
+        </div>
+<img alt="Okno Import Profile s polem Use Profile Code" class="guide-image" src="modpack-02.png"/>
+</div>
+<div class="step">
+<h3>3. Přidání serveru a první připojení</h3>
+<p>
+          Spusť Minecraft, otevři <strong>Multiplayer</strong> a klikni na
+          <strong>Add Server</strong>. Jako název serveru zadej
+          <strong>Modserver3</strong> a do pole Server Address vlož
+          <strong>116.202.51.118:20000</strong>. Potom klikni na
+          <strong>Done</strong> a připoj se k serveru.
+        </p>
+<img alt="Přidání serveru Modserver3 v Minecraftu s názvem a IP adresou" class="guide-image" src="modpack-03.png"/>
+<div class="note">
+          Hned po prvním připojení napiš <strong>Lukášovi/Heafastovi</strong>, aby ti přidělil stát, do kterého patříš. Můžeš ho také požádat o teleportování do hlavního města vašeho státu.
+        </div>
+</div>
+</section>
+<section class="guide" id="curseforge">
+<div class="guide-head">
+<div>
+<p class="eyebrow">Návod 02</p>
+<h2>Stažení CurseForge</h2>
+<p class="guide-intro">
+            CurseForge je potřebný pro jednoduchou instalaci a spuštění modpacku.
+          </p>
+</div>
+<a class="back" href="#home">↑ Zpět na hlavní stránku</a>
+</div>
+<div class="step">
+<h3>1. Stažení instalátoru</h3>
+<p>
+          Přejdi na
+          <a href="https://www.curseforge.com/download/app" rel="noopener" target="_blank">
+            stránku CurseForge
+          </a>
+          a klikni na tlačítko <strong>Download on Overwolf</strong>.
+        </p>
+<img alt="Stránka CurseForge s tlačítkem Download On Overwolf" class="guide-image" src="curseforge-01.png"/>
+</div>
+<div class="step">
+<h3>2. Spuštění instalátoru</h3>
+<p>
+          Po stažení otevři instalační soubor CurseForge. Klikni na
+          <strong>Next</strong>, následně potvrď <strong>Terms of Use</strong>
+          a znovu pokračuj tlačítkem <strong>Next</strong>. Nakonec klikni na
+          <strong>Accept &amp; Install</strong>.
+        </p>
+<img alt="Instalátor CurseForge s tlačítkem Accept and Install" class="guide-image" src="curseforge-02.png"/>
+</div>
+<div class="step">
+<h3>3. Kontrola Minecraftu</h3>
+<p>
+          Po otevření CurseForge zkontroluj, zda našlo <strong>Minecraft</strong>. Pokud to vypadá jako na obrázku, máš vše správně a můžeš pokračovat na
+          <strong>stažení modpacku</strong>. Pokud CurseForge Minecraft nenašlo, pokračuj na další krok.
+        </p>
+<img alt="Otevřený CurseForge se hrou Minecraft" class="guide-image" src="curseforge-03.png"/>
+</div>
+<div class="step">
+<h3>4. Pokud CurseForge Minecraft nenašlo</h3>
+<p>
+          Pokud CurseForge <strong>Minecraft nenašlo</strong>, klikni na
+          <strong>+</strong> na levé straně obrazovky a zvol
+          <strong>vyhledat Minecraft</strong>. Pokud ho ani potom nenajde, klikni na <strong>Manually add a game</strong> a najdi složku, ve které máš nainstalovaný celý Minecraft.
+        </p>
+<img alt="CurseForge s tlačítkem plus pro ruční přidání hry" class="guide-image" src="curseforge-04.png"/>
+</div>
+</section>
+<section class="guide" id="mapa">
+<div class="guide-head">
+<div>
+<p class="eyebrow">Návod 03</p>
+<h2>Ovládání mapy</h2>
+<p class="guide-intro">
+            Návod k práci s mapou Modserver3.
+          </p>
+</div>
+<a class="back" href="#home">↑ Zpět na hlavní stránku</a>
+</div>
+<div class="step">
+<h3>1. Otevření mapy</h3>
+<p>
+          Mapu otevřeš klávesou <strong>M</strong> (pokud není změněna).
+        </p>
+<img alt="Mapa v Minecraftu otevřená klávesou M" class="guide-image" src="mapa-01.png"/>
+</div>
+<div class="step">
+<h3>2. Waypointy</h3>
+<p>
+          Když stiskneš <strong>B</strong>, vytvoříš waypoint a otevře se toto menu. Zde můžeš nastavit <strong>barvu</strong>, <strong>název</strong> a
+          <strong>typ waypointu</strong>.
+        </p>
+<p>
+          Pokud chceš waypoint vidět přímo <strong>ve světě</strong>, ponech nastavení
+          <strong>Local</strong>. Pokud ho chceš vidět <strong>pouze na mapě</strong>, nastav <strong>World map Loc</strong>.
+        </p>
+<img alt="Menu nového waypointu na mapě s možnostmi názvu, barvy a typu waypointu" class="guide-image" src="mapa-02.png"/>
+</div>
+<div class="step">
+<h3>3. Temporary waypoint</h3>
+<p>
+          Stisknutím <strong>+</strong> vytvoříš <strong>dočasný waypoint</strong>, který zmizí, když opustíš svět.
+        </p>
+<p>
+          Tyto waypointy jsou vhodné k označení místa, kam se chceš dostat. Odstraníš je tlačítkem <strong>Delete</strong>, stejně jako každý jiný waypoint.
+        </p>
+<img alt="Mapa s tlačítkem plus pro vytvoření dočasného waypointu" class="guide-image" src="mapa-03.png"/>
+</div>
+<div class="step">
+<h3>4. Cave Mode</h3>
+<p>
+          Kliknutím na ikonu <strong>oblouku</strong> ve spodní části boční lišty otevřeš menu <strong>Cave Mode</strong>.
+        </p>
+<p>
+          Cave Mode má dva typy:
+          <strong>Full</strong> zobrazí všechny jeskyně a
+          <strong>Layered</strong> zobrazí pouze jeskyně v nastavené výšce.
+        </p>
+<div class="note">
+          Pokud je nastaveno <strong>Auto</strong>, Cave Mode se v obou případech zapne automaticky, když hráč vstoupí do jeskyně.
+        </div>
+<img alt="Mapa v režimu Cave Mode s menu Full a Layered" class="guide-image" src="mapa-04.png"/>
+</div>
+<div class="step">
+<h3>5. Drawing Mode</h3>
+<p>
+          Po kliknutí na <strong>nejvyšší ikonu v levém dolním sloupci</strong>
+          se spustí <strong>Drawing Mode</strong>.
+        </p>
+<p>
+          Jednotlivé nástroje shora dolů:
+        </p>
+<ul style="color: var(--muted); margin-top: -6px; margin-bottom: 18px; padding-left: 22px;">
+<li><strong>1.</strong> pero pro kreslení <strong>rovných čar</strong>,</li>
+<li><strong>2.</strong> nástroj pro vytvoření <strong>nekonečné čáry</strong>,</li>
+<li><strong>3.</strong> zvýraznění <strong>celých chunků</strong>,</li>
+<li><strong>4.</strong> psaní <strong>textu do mapy</strong> po kliknutí do mapy,</li>
+<li><strong>5.</strong> změna <strong>barvy</strong>,</li>
+<li><strong>6.</strong> <strong>měření vzdálenosti</strong>.</li>
+</ul>
+<div class="note">
+          Pokud chceš něco smazat, použij <strong>pravé tlačítko myši</strong>.
+        </div>
+<img alt="Mapa v režimu Drawing Mode s nástroji pro kreslení" class="guide-image" src="mapa-05.png"/>
+</div>
+<div class="step">
+<h3>6. Online mapa</h3>
+<p>
+          K dispozici je také <strong>online mapa Modserver3</strong>, na které najdeš všechny <strong>státy, regiony a města</strong>.
+        </p>
+<p>
+          Online mapa obsahuje také <strong>seznam všech objektů</strong>
+          a <strong>vyhledávání</strong>, pomocí kterého můžeš rychle najít město, region, stát nebo jinou strukturu.
+        </p>
+<p>
+          Mapu otevřeš na:
+          <a href="https://heafast.github.io/Modserver3map/" rel="noopener" target="_blank">
+            heafast.github.io/Modserver3map
+          </a>
+</p>
+<a class="button" href="https://heafast.github.io/Modserver3map/" rel="noopener" target="_blank">
+          Otevřít online mapu
+        </a>
+<img alt="Online mapa Modserver3 se státy, regiony, městy, seznamem a vyhledáváním" class="guide-image" src="mapa-06.png" style="margin-top: 20px;"/>
+</div>
+</section>
+<section class="guide" id="keybindy">
+<div class="guide-head">
+<div>
+<p class="eyebrow">Návod 04</p>
+<h2>Doporučené keybindy</h2>
+<p class="guide-intro">
+            Nastavení kláves, která usnadní hraní a zabrání konfliktům.
+          </p>
+</div>
+<a class="back" href="#home">↑ Zpět na hlavní stránku</a>
+</div>
+<div class="step">
+<h3>1. Jak se dostat do Key Binds</h3>
+<p>
+          Přejdi do <strong>Game Menu</strong> → <strong>Options</strong> →
+          <strong>Controls</strong> → <strong>Key Binds</strong>.
+        </p>
+<img alt="Obrazovka Controls v Minecraftu s tlačítkem Key Binds" class="guide-image" src="keybindy-01.png"/>
+</div>
+<div class="step">
+<h3>2. Používání vyhledávače</h3>
+<p>
+          Vyhledávač v horní části obrazovky umožňuje filtrovat keybindy podle klávesy, názvu akce nebo modu.
+        </p>
+<p>
+          Použij tyto příkazy:
+        </p>
+<ul style="color: var(--muted); margin-top: -6px; margin-bottom: 18px; padding-left: 22px;">
+<li>
+<code>key:"klávesa"</code> – zobrazí všechny akce, které používají konkrétní klávesu, například <code>key:"M"</code>.
+          </li>
+<li>
+<code>name:"akce"</code> – vyhledá konkrétní akci podle názvu.
+          </li>
+<li>
+<code>category:"mod"</code> – zobrazí keybindy patřící jednomu modu.
+          </li>
+</ul>
+<img alt="Vyhledávač v nastavení Key Binds v Minecraftu" class="guide-image" src="keybindy-02.png"/>
+</div>
+<div class="step">
+<h3>3. Konflikt Xaero mapy a Voice Chatu</h3>
+<p>
+          Pokud se při otevření mapy vypíná mikrofon, jde o konflikt mezi
+          <strong>Xaero mapou</strong> a <strong>Voice Chatem</strong>.
+        </p>
+<p>
+          Doporučené řešení je přenastavit akci
+          <strong>Open World Map</strong> na klávesu
+          <strong>Right Control</strong>.
+        </p>
+<img alt="Nastavení Open World Map na Right Control v Key Binds" class="guide-image" src="keybindy-03.png"/>
+</div>
+<div class="step">
+<h3>4. Konflikt Eureka, Crafting on a Stick, Call Horse a Voice Chat</h3>
+<p>
+          Mody <strong>Eureka</strong>, <strong>Crafting on a Stick</strong>,
+          <strong>Call Horse</strong> a <strong>Voice Chat</strong> používají stejnou klávesu <strong>V</strong>, takže vzniká konflikt.
+        </p>
+<p>
+          Doporučujeme přenastavit tyto klávesy tak, jak jsou nastavené na obrázku.
+        </p>
+<img alt="Konflikt klávesy V mezi mody Eureka, Crafting on a Stick, Call Horse a Voice Chat" class="guide-image" src="keybindy-04.png"/>
+</div>
+<div class="step">
+<h3>5. Konflikt Oculus a Essential</h3>
+<p>
+          Klávesa <strong>R</strong> pro <strong>Emote Wheel</strong> v modu Essential může zároveň aktivovat <strong>Reload Shaders</strong>
+          v modu Oculus.
+        </p>
+<p>
+          Aby se při otevření emote wheelu zbytečně nerestartovaly shadery, přenastav <strong>Reload Shaders</strong> na nepoužívanou klávesu
+          <strong>F8</strong>.
+        </p>
+<img alt="Nastavení Reload Shaders na klávesu F8 kvůli konfliktu Oculus a Essential" class="guide-image" src="keybindy-05.png"/>
+</div>
+<div class="step">
+<h3>6. Konflikt Xaero World Map, Field Guide a Traveler's Backpack</h3>
+<p>
+          Mody <strong>Xaero World Map</strong>, <strong>Field Guide</strong>
+          a <strong>Traveler's Backpack</strong> používají klávesu
+          <strong>B</strong>, takže vzniká konflikt.
+        </p>
+<p>
+          Doporučené nastavení je:
+          <strong>Open Field Guide</strong> přenastavit na <strong>F9</strong>
+          a <strong>Open Backpack</strong> přenastavit na
+          <strong>Right Alt</strong>.
+        </p>
+<img alt="Konflikt klávesy B mezi mody Xaero World Map, Field Guide a Traveler's Backpack" class="guide-image" src="keybindy-06.png"/>
+</div>
+<div class="step">
+<h3>7. Konflikt Essential, Fullbright, Curios a Voice Chat</h3>
+<p>
+          Mezi mody <strong>Essential</strong>, <strong>Jack's Fullbright</strong>,
+          <strong>Curios</strong> a <strong>Voice Chat</strong> může vznikat konflikt kláves.
+        </p>
+<p>
+          Doporučené nastavení je:
+        </p>
+<ul style="color: var(--muted); margin-top: -6px; margin-bottom: 18px; padding-left: 22px;">
+<li><strong>Toggle Jack's Fullbright</strong> → <strong>Enter</strong></li>
+<li><strong>Essential menu</strong> → <strong>F10</strong></li>
+<li><strong>Open/Close Curios Inventory</strong> → <strong>H</strong></li>
+</ul>
+<img alt="Doporučená nastavení pro Essential, Fullbright, Curios a Voice Chat" class="guide-image" src="keybindy-07.png"/>
+</div>
+<div class="step">
+<h3>8. Konflikt Curios, Voice Chat a Essential</h3>
+<p>
+          Mezi mody <strong>Curios</strong>, <strong>Voice Chat</strong>
+          a <strong>Essential</strong> může vzniknout konflikt kláves.
+        </p>
+<p>
+          Doporučené nastavení je:
+        </p>
+<ul style="color: var(--muted); margin-top: -6px; margin-bottom: 18px; padding-left: 22px;">
+<li><strong>Friends GUI</strong> → <strong>F12</strong></li>
+<li><strong>Hide Voice Chat Icons</strong> → <strong>ô</strong></li>
+</ul>
+<img alt="Doporučená nastavení pro Curios, Voice Chat a Essential" class="guide-image" src="keybindy-08.png"/>
+</div>
+<div class="step">
+<h3>9. Konflikt Call Horse a Social Interaction Screen</h3>
+<p>
+          Pokud mají <strong>Call Horse</strong> a
+          <strong>Social Interaction Screen</strong> nastavenou stejnou klávesu, vzniká konflikt.
+        </p>
+<p>
+          Doporučené řešení je přenastavit
+          <strong>Social Interaction Screen</strong> na
+          <strong>Left Control + P</strong>. Takto lze obrazovku snadno otevřít při nastavování osobního koně.
+        </p>
+<img alt="Social Interaction Screen nastavený na Left Control plus P" class="guide-image" src="keybindy-09.png"/>
+</div>
+<div class="step">
+<h3>10. Konflikt Xaero Minimap, Zoom a Traveler's Backpack</h3>
+<p>
+          Mezi funkcemi modů <strong>Xaero Minimap</strong>,
+          <strong>Zoom</strong> a <strong>Traveler's Backpack</strong>
+          může vzniknout konflikt kláves.
+        </p>
+<p>
+          Doporučené nastavení je:
+        </p>
+<ul style="color: var(--muted); margin-top: -6px; margin-bottom: 18px; padding-left: 22px;">
+<li><strong>Enlarge Minimap</strong> → <strong>Menu</strong></li>
+<li><strong>Swap Tool/Change Hose Mode</strong> → <strong>Right Shift</strong></li>
+<li><strong>Zoom</strong> → <strong>ň</strong></li>
+</ul>
+<img alt="Doporučené klávesy pro Xaero Minimap, Zoom a Traveler's Backpack" class="guide-image" src="keybindy-10.png"/>
+</div>
+<div class="step">
+<h3>11. Konflikt Essential, Zoom a Eureka</h3>
+<p>
+          Mezi mody <strong>Essential</strong>, <strong>Zoom</strong>
+          a <strong>Eureka</strong> může vzniknout konflikt kláves.
+        </p>
+<p>
+          Doporučené řešení je přenastavit funkci
+          <strong>Cruise</strong> z modu <strong>Eureka</strong>
+          na klávesu <strong>Y</strong>.
+        </p>
+<img alt="Konflikt Essential, Zoom a Eureka s nastavením Cruise na klávesu Y" class="guide-image" src="keybindy-11.png"/>
+</div>
+</section>
+</main>
+<footer>
+    Modserver3
+  </footer>
+<script>
+
+    document.querySelectorAll('.language-switch a').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (window.location.hash) {
+          link.href = link.getAttribute('href').split('#')[0] + window.location.hash;
+        }
+      });
+    });
+
+    function copyIP(button) {
+      const ip = document.getElementById('server-ip').textContent.trim();
+      navigator.clipboard.writeText(ip).then(() => {
+        const oldText = button.textContent;
+        button.textContent = 'IP zkopírována';
+        setTimeout(() => button.textContent = oldText, 1600);
+      }).catch(() => {
+        window.prompt('Zkopíruj IP adresu:', ip);
+      });
+    }
+  </script>
+</body>
+</html>
